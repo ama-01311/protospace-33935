@@ -25,7 +25,8 @@ class PrototypesController < ApplicationController
 
   def show
     @prototype = Prototype.find(params[:id])
-    #binding.pry
+    @comment = Comment.new
+    
   end
 
   def edit
