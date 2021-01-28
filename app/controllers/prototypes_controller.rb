@@ -1,4 +1,6 @@
 class PrototypesController < ApplicationController
+  before_action :authenticate_user!, only: [:new, :create, :edit, :update, :destroy]
+
   def index
     @prototypes = Prototype.all
   end
@@ -8,14 +10,7 @@ class PrototypesController < ApplicationController
   end
 
   def create
-    
     @prototype = Prototype.new(prototype_params)
-
-     # binding.pry
-    # params
-    # @room.valid?
-    # @room.errors.full_messages
-
     if @prototype.save
       redirect_to root_path
     else
@@ -25,11 +20,15 @@ class PrototypesController < ApplicationController
 
   def show
     @prototype = Prototype.find(params[:id])
-    #binding.pry
+    @comment = Comment.new
+    @comments = @prototype.comments.includes(:user)
   end
 
   def edit
     @prototype = Prototype.find(params[:id])
+    unless user_signed_in? && current_user.id == @prototype.user_id
+      redirect_to action: :index
+    end
   end
 
   def update
